@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechQuiz — Electrónica & Mecatrónica</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== MENÚ PRINCIPAL ===== -->
+<div id="s-main" class="screen active">
+  <div class="main-bg">
+    <div class="main-logo">
+      <div class="logo-mark">😵‍💫<span>MÁS ALLÁ </span>DEL FRANCÉS</div>
+      <p class="logo-sub">Historia · Diversidad · Conservación · Día de la lengua</p>
+    </div>
+    <div class="main-menu">
+      <button class="menu-btn" onclick="showScreen('s-login','individual')">
+        <span class="menu-icon">🎮</span> JUEGO INDIVIDUAL
+      </button>
+      <button class="menu-btn" onclick="showScreen('s-admin-login')">
+        <span class="menu-icon">🔧</span> ADMINISTRADOR
+      </button>
+      <button class="menu-btn" onclick="showScreen('s-options')">
+        <span class="menu-icon">⚙️</span> OPCIONES
+      </button>
+      <button class="menu-btn menu-btn-exit" onclick="alert('Gracias por jugar')">
+        <span class="menu-icon">🚪</span> SALIR
+      </button>
+    </div>
+    <p class="version">v1.0 © 2025 TechQuiz</p>
+  </div>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="s-login" class="screen">
+  <div class="login-wrap">
+    <div class="login-logo">⚡ TechQuiz</div>
+    <div class="card">
+      <div class="field">
+        <label>Correo electrónico</label>
+        <input type="email" id="inp-email" placeholder="usuario@correo.com" value="demo@quiz.com">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="inp-pass" placeholder="••••••••" value="demo1234">
+      </div>
+      <button class="menu-btn" style="width:100%;margin-top:4px" onclick="doLogin()">Iniciar sesión</button>
+      <button class="btn-link" onclick="showScreen('s-main')">← Volver al menú</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LOGIN ADMINISTRADOR ===== -->
+<div id="s-admin-login" class="screen">
+  <div class="login-wrap">
+    <div class="login-logo">🔧 Administrador</div>
+    <div class="card">
+      <div class="field">
+        <label>Usuario</label>
+        <input type="text" id="adm-user" placeholder="Usuario" autocomplete="off" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="adm-pass" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      </div>
+      <p id="adm-login-err" style="display:none;color:#dc2626;font-size:13px;margin-bottom:8px">Usuario o contraseña incorrectos.</p>
+      <button class="menu-btn" style="width:100%;margin-top:4px" onclick="doAdminLogin()">Ingresar</button>
+      <button class="btn-link" onclick="showScreen('s-main')">← Volver al menú</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SELECCIÓN DE CATEGORÍA ===== -->
+<div id="s-catsel" class="screen">
+  <div class="catsel-wrap">
+    <div class="orbit-bg"></div>
+    <div class="catsel-inner">
+      <p class="catsel-label">Categoría: <span id="player-level-name">BRONCE</span></p>
+      <div class="catsel-points">
+        <span>Puntos actuales: </span><strong id="player-points-disp">0</strong>
+        <br>
+        <span style="font-size:13px;color:#185FA5">Puntos para siguiente nivel: <strong id="points-next">1620</strong></span>
+      </div>
+      <p class="catsel-q">¿Comenzar el juego?</p>
+      <div style="margin-top:4px">
+        <p style="font-size:13px;color:#555;margin-bottom:12px">Elige la categoría:</p>
+        <select id="sel-cat" class="cat-select"></select>
+      </div>
+      <button class="menu-btn" style="margin-top:1rem" onclick="beginQuiz()">ACEPTAR</button>
+      <button class="menu-btn menu-btn-exit" style="margin-top:8px" onclick="showScreen('s-main')">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="s-quiz" class="screen">
+  <!-- Score bar -->
+  <div class="quiz-topbar">
+    <div class="qtop-score" id="qt-score">0</div>
+    <div class="qtop-level" id="qt-level">🥉 BRONCE</div>
+    <div class="qtop-timer" id="qt-timer">20</div>
+  </div>
+
+  <!-- Imagen de la pregunta + número -->
+  <div class="question-header">
+    <div class="q-img-box">
+      <div class="q-img-inner" id="q-img">🔌</div>
+      <div class="q-num-badge" id="q-num-badge">1<br><span style="font-size:10px;font-weight:400">+0</span></div>
+    </div>
+  </div>
+
+  <!-- Pregunta -->
+  <p class="question-text" id="quiz-q">Cargando pregunta...</p>
+
+  <!-- Opciones -->
+  <div class="opts-grid" id="quiz-opts"></div>
+</div>
+
+<!-- ===== EXPLICACIÓN ===== -->
+<div id="s-explain" class="screen">
+  <div class="explain-wrap">
+    <div class="orbit-bg"></div>
+    <div class="explain-inner">
+      <p class="explain-qtitle" id="exp-q"></p>
+      <div class="explain-answer" id="exp-short"></div>
+      <p class="explain-remaining">Preguntas restantes: <strong id="exp-remaining">0</strong></p>
+      <button class="menu-btn" onclick="showDetailed()">RESPUESTA DETALLADA</button>
+      <button class="menu-btn" style="margin-top:8px" onclick="nextQuestion()">CONTINUAR</button>
+      <button class="menu-btn menu-btn-exit" style="margin-top:8px" onclick="confirmExit()">SALIR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESPUESTA DETALLADA ===== -->
+<div id="s-detailed" class="screen">
+  <div class="explain-wrap">
+    <div class="orbit-bg"></div>
+    <div class="explain-inner">
+      <p class="explain-qtitle" id="det-q"></p>
+      <div class="detail-text" id="det-text"></div>
+      <button class="menu-btn" style="margin-top:1rem" onclick="nextQuestion()">CONTINUAR</button>
+      <button class="menu-btn menu-btn-secondary" style="margin-top:8px" onclick="showScreen('s-explain')">VOLVER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULTADO FINAL ===== -->
+<div id="s-result" class="screen">
+  <div class="result-wrap">
+    <div class="orbit-bg"></div>
+    <div class="result-inner">
+      <h2 class="result-title">RESULTADO FINAL</h2>
+      <div class="result-score" id="res-score">0</div>
+
+      <div class="result-next">
+        Puntos para Siguiente Nivel: <strong id="res-next">0</strong>
+      </div>
+
+      <div class="result-stat-block">
+        <p class="result-stat-label">Porcentaje de acierto</p>
+        <div class="result-bar-track">
+          <div class="result-bar-fill green" id="res-bar-acc"></div>
+        </div>
+        <p class="result-stat-val" id="res-acc">0%</p>
+      </div>
+
+      <div class="result-stat-block">
+        <p class="result-stat-label">Tiempo medio de respuesta</p>
+        <div class="result-bar-track">
+          <div class="result-bar-fill blue" id="res-bar-time"></div>
+        </div>
+        <p class="result-stat-val" id="res-time">0 segundos</p>
+      </div>
+
+      <button class="menu-btn" style="margin-top:1.5rem" onclick="showScreen('s-main')">ACEPTAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OPCIONES ===== -->
+<div id="s-options" class="screen">
+  <div class="options-wrap">
+    <div class="options-bg"></div>
+    <div class="options-inner">
+      <h2 class="options-title">OPCIONES</h2>
+      <div class="opt-field">
+        <label>IDIOMA</label>
+        <select><option>Español</option><option>English</option></select>
+      </div>
+      <div class="opt-field">
+        <label>VOLUMEN DE MÚSICA</label>
+        <input type="range" min="0" max="100" value="30" oninput="this.nextElementSibling.textContent=this.value+'%'">
+        <span class="range-val">30%</span>
+      </div>
+      <div class="opt-field">
+        <label>VOLUMEN DE EFECTOS</label>
+        <input type="range" min="0" max="100" value="30" oninput="this.nextElementSibling.textContent=this.value+'%'">
+        <span class="range-val">30%</span>
+      </div>
+      <button class="menu-btn" style="margin-top:1rem" onclick="showScreen('s-main')">VOLVER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN ===== -->
+<div id="s-admin" class="screen">
+  <div style="max-width:700px;margin:0 auto;padding:1.5rem 1rem 3rem">
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">🔧 Panel administrador</span>
+        <span class="topbar-sub">Gestión de preguntas y usuarios</span>
+      </div>
+      <button class="btn btn-outline sm" onclick="showScreen('s-main')">Salir</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab active" onclick="adminTab(this,'adm-preguntas')">Preguntas</button>
+      <button class="tab" onclick="adminTab(this,'adm-usuarios')">Usuarios</button>
+      <button class="tab" onclick="adminTab(this,'adm-categorias')">Categorías</button>
+      <button class="tab" onclick="adminTab(this,'adm-nueva')">+ Nueva pregunta</button>
+    </div>
+    <div id="adm-preguntas"><div id="adm-q-list"></div></div>
+    <div id="adm-usuarios" style="display:none"><div id="adm-u-list"></div></div>
+    <div id="adm-categorias" style="display:none">
+      <div class="card" style="max-width:none;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0">
+          <label>Nueva categoría</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="nc-name" placeholder="Ej. Neumática" style="flex:1;min-width:180px" onkeydown="if(event.key==='Enter')addCategory()">
+            <button class="menu-btn" style="width:auto;padding:10px 20px;font-size:14px" onclick="addCategory()">+ Agregar categoría</button>
+          </div>
+          <span id="nc-msg" style="font-size:13px;color:#166534;display:none;margin-top:8px">✓ Categoría agregada</span>
+        </div>
+      </div>
+      <div id="adm-c-list"></div>
+    </div>
+    <div id="adm-nueva" style="display:none">
+      <div class="card">
+        <div class="field-row">
+          <div class="field"><label>Categoría</label>
+            <select id="nq-cat"></select>
+          </div>
+          <div class="field"><label>Dificultad</label>
+            <select id="nq-diff"><option>Básico</option><option>Intermedio</option><option>Avanzado</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Pregunta</label><textarea id="nq-q" rows="3" placeholder="Escribe la pregunta aquí..."></textarea></div>
+        <div class="field-row">
+          <div class="field"><label>Opción A</label><input type="text" id="nq-a"></div>
+          <div class="field"><label>Opción B</label><input type="text" id="nq-b"></div>
+          <div class="field"><label>Opción C</label><input type="text" id="nq-c"></div>
+          <div class="field"><label>Opción D</label><input type="text" id="nq-d"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Respuesta correcta</label>
+            <select id="nq-ans"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+          </div>
+          <div class="field"><label>Explicación breve</label><input type="text" id="nq-exp"></div>
+        </div>
+        <div class="field"><label>Explicación detallada</label><textarea id="nq-det" rows="4" placeholder="Explicación extendida..."></textarea></div>
+        <div class="field"><label>Emoji representativo</label><input type="text" id="nq-emoji" placeholder="🔌" style="max-width:100px"></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+          <button class="menu-btn" style="padding:10px 20px;font-size:14px" onclick="addQuestion()">+ Agregar pregunta</button>
+          <span id="nq-msg" style="font-size:13px;color:#166534;display:none">✓ Pregunta agregada</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
