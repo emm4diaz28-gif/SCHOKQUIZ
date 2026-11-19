@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechQuiz — Electrónica & Mecatrónica</title>
+  <title>TechQuiz — Diversidad Lingüística Francesa</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,7 +29,7 @@
         <span class="menu-icon">🚪</span> SALIR
       </button>
     </div>
-    <p class="version">v1.1 © 2026 ShockQuiz</p>
+    <p class="version">v2.2 © 2026 ShockQuiz</p>
   </div>
 </div>
 
@@ -40,7 +40,7 @@
     <div class="card">
       <div class="field">
         <label>Correo electrónico</label>
-        <input type="email" id="inp-email" placeholder="usuario@correo.com" value="demo@quiz.com">
+        <input type="email" id="inp-email" placeholder="usuario@correo.com" value="name@quiz.com">
       </div>
       <div class="field">
         <label>Contraseña</label>
@@ -65,7 +65,7 @@
         <label>Contraseña</label>
         <input type="password" id="adm-pass" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')doAdminLogin()">
       </div>
-      <p id="adm-login-err" style="display:none;color:#dc2626;font-size:13px;margin-bottom:8px">Usuario o contraseña incorrectos.</p>
+      <p id="adm-login-err" style="display:none;color:#55e929;font-size:13px;margin-bottom:8px">Usuario o contraseña incorrectos.</p>
       <button class="menu-btn" style="width:100%;margin-top:4px" onclick="doAdminLogin()">Ingresar</button>
       <button class="btn-link" onclick="showScreen('s-main')">← Volver al menú</button>
     </div>
@@ -81,7 +81,7 @@
       <div class="catsel-points">
         <span>Puntos actuales: </span><strong id="player-points-disp">0</strong>
         <br>
-        <span style="font-size:13px;color:#185FA5">Puntos para siguiente nivel: <strong id="points-next">1620</strong></span>
+        <span style="font-size:13px;color:#1488f5">Puntos para siguiente nivel: <strong id="points-next">1620</strong></span>
       </div>
       <p class="catsel-q">¿Comenzar el juego?</p>
       <div style="margin-top:4px">
@@ -198,6 +198,20 @@
         <label>VOLUMEN DE EFECTOS</label>
         <input type="range" min="0" max="100" value="30" oninput="this.nextElementSibling.textContent=this.value+'%'">
         <span class="range-val">30%</span>
+      </div>
+      <div class="opt-field">
+        <label>ALERTA ESP32 (WiFi)</label>
+        <label class="esp-check">
+          <input type="checkbox" id="esp-enabled" onchange="saveEspConfig()">
+          <span>Activar alerta en respuestas incorrectas</span>
+        </label>
+        <input type="text" id="esp-ip" class="esp-input" placeholder="IP del ESP32, ej. 192.168.1.50"
+               inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false"
+               oninput="saveEspConfig()">
+        <div class="esp-row">
+          <button type="button" class="esp-btn" onclick="probarEsp()">Probar conexión</button>
+          <span id="esp-status" class="esp-status"></span>
+        </div>
       </div>
       <button class="menu-btn" style="margin-top:1rem" onclick="showScreen('s-main')">VOLVER</button>
     </div>

@@ -209,8 +209,8 @@ function doLogin() {
 }
 
 // Credenciales del administrador
-const ADMIN_USER = 'Emma';
-const ADMIN_PASS = '25DZ25z';
+const ADMIN_USER = 'GUERRERITOSSUTH';
+const ADMIN_PASS = 'OCHIGUA';
 
 function doAdminLogin() {
   const user = document.getElementById('adm-user').value.trim();
